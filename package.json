@@ -1,6 +1,6 @@
 {
   "name": "@jhedevx/element",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Library JavaScript front-end ringan dan deklaratif untuk membangun UI dan Web Components tanpa dependensi.",
   "main": "src/Element.js",
   "module": "src/Element.js",
