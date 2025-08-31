@@ -1,5 +1,5 @@
 // Make sure the path to your library file is correct
-import { el } from './Element.js';
+import { el } from '../src/Element.js';
 
 // --- 1. Core: `el.create` and `el.init` ---
 const demoCore = el.init('#demo-core');
