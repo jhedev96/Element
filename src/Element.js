@@ -1,4 +1,3 @@
-// Class Element
 class Element {
     // Properti privat untuk konfigurasi dan fungsionalitas sanitasi
     #tagWhitelist = {
@@ -95,15 +94,12 @@ class Element {
         // Terapkan pengaturan sanitasi
         this.#enableSanitization = sanitizeSetting;
 
-        // Tentukan #targetRoot
         if (rootInput !== null && rootInput !== undefined) {
             this.#targetRoot = this.#$(rootInput);
             if (!this.#targetRoot) {
                 console.warn("Root element yang ditentukan tidak ditemukan atau tidak valid:", rootInput);
             }
         }
-        // Jika rootInput adalah null/undefined, biarkan #targetRoot sebagai null atau nilai sebelumnya
-        // Ini memungkinkan init() dipanggil tanpa root pada awalnya, dan root bisa diatur nanti.
     }
 
     #$(input) {
@@ -134,8 +130,6 @@ class Element {
      * @param {boolean} [sanitize=false] - Opsi sanitasi, hanya digunakan jika `opts` adalah string atau DOM Node.
      */
     init(opts, sanitize) {
-        // Panggil #processConfig dengan parameter yang sesuai.
-        // #processConfig sekarang cukup pintar untuk menangani semua kasus input.
         this.#processConfig(opts, sanitize);
 
         const currentRoot = this.#targetRoot;
@@ -259,8 +253,12 @@ class Element {
             actualElem = this.text(String(elem), false, finalSanitizeHtmlString); // Pass false for parse as it's just text
         }
 
+        if (typeof elem === 'function') {
+            actualElem = elem();
+        }
+
         if (!actualElem || (!(actualElem instanceof HTMLElement) && !(actualElem instanceof SVGElement) && !(actualElem instanceof Text) && !(actualElem instanceof DocumentFragment))) {
-            // Jika elemen adalah null (misalnya dari disconnectedCallback), kita akan membersihkan parent
+            // Jika elemen adalah null (misalnya dari disconnectedCallback), akan membersihkan parent
             if (elem === null) {
                  while (actualParent.firstChild) {
                     actualParent.removeChild(actualParent.firstChild);
@@ -370,7 +368,7 @@ class Element {
      * @returns {HTMLElement|SVGElement|Text|DocumentFragment|null} Elemen DOM yang dibuat atau hasil render komponen.
      */
     create(tag, props = {}, children, sanitizeConfig) {
-        let finalSanitizeSetting = this.#enableSanitization; // Gunakan 'this'
+        let finalSanitizeSetting = this.#enableSanitization;
 
         if (typeof sanitizeConfig === 'boolean') {
             finalSanitizeSetting = sanitizeConfig;
@@ -380,7 +378,6 @@ class Element {
             finalSanitizeSetting = props.sanitizeChildren;
         }
 
-        // --- Deteksi Tipe Komponen Fungsional ---
         if (typeof tag === "function") {
             const componentProps = { ...props, children: children };
             const componentResult = tag(componentProps); // Panggil fungsi komponen
@@ -389,12 +386,12 @@ class Element {
             if (typeof componentResult === 'string') {
                 // Kasus 1: Komponen mengembalikan HTML string murni
                 // Contoh: function MyComp() { return `<div>Hello</div>`; }
-                const objectFromHtml = this.buildObjectFromHTML(componentResult); // Gunakan 'this'
+                const objectFromHtml = this.buildObjectFromHTML(componentResult);
                 if (!objectFromHtml) {
                     console.error("Gagal mengurai string HTML dari komponen fungsional.");
                     return null;
                 }
-                return this.#buildElementFromObject(objectFromHtml, finalSanitizeSetting); // Gunakan 'this'
+                return this.#buildElementFromObject(objectFromHtml, finalSanitizeSetting);
             } else if (componentResult instanceof HTMLElement ||
                        componentResult instanceof SVGElement ||
                        componentResult instanceof Text ||
@@ -410,14 +407,12 @@ class Element {
                 return null;
             }
         }
-        // --- Akhir Deteksi Tipe Komponen Fungsional ---
-
-        // Sisa logika untuk membuat elemen DOM dari string tag (seperti 'div', 'p', dll.)
+ 
         let el;
-        const isSVG = this.#svgElements.includes(tag); // Gunakan 'this'
+        const isSVG = this.#svgElements.includes(tag);
 
         if (isSVG) {
-            el = document.createElementNS(this.#namespaces.svg, tag); // Gunakan 'this'
+            el = document.createElementNS(this.#namespaces.svg, tag);
         } else {
             el = document.createElement(tag);
         }
@@ -439,9 +434,6 @@ class Element {
             children({
                 childrens: (elemTag, elemProps, elemChild, loop = 1) => {
                     for (let i = 0; i < loop; i += 1) {
-                        // Untuk anak-anak rekursif, jika `elemProps` tidak memiliki
-                        // `sanitizeChildren` atau `_sanitize` (jika Anda pernah menggunakannya),
-                        // maka teruskan `finalSanitizeSetting` sebagai `sanitizeConfig` ke panggilan `create` berikutnya.
                         const childProps = { ...elemProps };
                         let childSanitizeConfig = finalSanitizeSetting; // Ambil dari induk
 
@@ -462,7 +454,6 @@ class Element {
             }
         }
         // Pastikan `children` bisa berupa `null` atau `undefined` dan argumen ke-4 tetap diinterpretasikan
-        // Ini adalah kunci perbaikan untuk kasus `create('p', {}, null, {sanitize: false})`
         else if (children !== undefined && children !== null && (typeof children === 'string' || typeof children === 'number')) {
             if (isSVG && tag === 'text') {
                 el.textContent = String(children);
@@ -516,10 +507,8 @@ class Element {
         return el;
     }
 
-    // Tambahkan metode pembantu ini di dalam class Element
-    // Ini adalah versi publik dari #buildElementFromObject
     jsx(htmlStringOrComponentResult, sanitize) {
-        let sanitizeSetting = this.#enableSanitization; // Gunakan 'this'
+        let sanitizeSetting = this.#enableSanitization;
 
         if (typeof sanitize === 'boolean') {
             sanitizeSetting = sanitize;
@@ -532,11 +521,11 @@ class Element {
         if (typeof htmlStringOrComponentResult === 'function') {
             console.warn("`jsx` yang didefinisikan untuk string HTML tidak cocok untuk menerima fungsi komponen secara langsung seperti `" + htmlStringOrComponentResult + "`.");
             console.warn("Silakan panggil komponen fungsional Anda terlebih dahulu untuk mendapatkan string HTML-nya.");
-            return null; // Atau throw error
+            return null;
         }
 
         // Lanjutkan dengan parsing string HTML
-        const objectFromHtml = this.buildObjectFromHTML(finalHtmlString); // Gunakan 'this' pada `el.buildObjectFromHTML`
+        const objectFromHtml = this.buildObjectFromHTML(finalHtmlString);
 
         if (!objectFromHtml) {
             console.error("Gagal mengurai string HTML menjadi objek DOM.");
@@ -583,11 +572,9 @@ class Element {
     setAttributes(el, props, isSVG = false, sanitizeHtmlContent) {
         const finalSanitizeHtmlContent = typeof sanitizeHtmlContent === 'boolean' ? sanitizeHtmlContent : this.#enableSanitization;
 
-        // ... (attributeNameMap tetap sama)
-
         const setAttributeMethods = {
             'class': (value) => {
-                let classNameStr = ""; // Ubah nama variabel untuk kejelasan
+                let classNameStr = "";
                 if (Array.isArray(value)) {
                     value = value.flat(5);
                     for (let i = 0; i < value.length; i++) {
@@ -600,9 +587,9 @@ class Element {
                 }
 
                 if (isSVG) {
-                    el.setAttribute('class', classNameStr); // Perbaikan untuk SVG
+                    el.setAttribute('class', classNameStr);
                 } else {
-                    el.className = classNameStr; // Untuk HTML
+                    el.className = classNameStr;
                 }
             },
             'className': (value) => setAttributeMethods['class'](value),
@@ -656,7 +643,7 @@ class Element {
                     value(el);
                 }
             },
-            'xmlns': (value) => { // Ini untuk mengatur atribut namespace xmlns
+            'xmlns': (value) => {
                 el.setAttributeNS(this.#namespaces.xmlns, 'xmlns', String(value));
             }
         };
@@ -896,12 +883,10 @@ class Element {
         }
         return false;
     }
-    
-    // --- START: Integrasi Custom Element ---
-    get customElements() {
-        const self = this; // Simpan referensi ke instance `Element`
 
-        // Implementasi ulang fungsi-fungsi yang dibutuhkan dari Preact
+    get customElements() {
+        const self = this;
+
         const h = self.create.bind(self);
 
         const render = (element, container) => {
@@ -938,12 +923,6 @@ class Element {
             // Buat elemen baru dengan props yang digabungkan dan children yang sama
             return h(element.tagName, props, children);
         };
-
-        /**
-         * @typedef {import('preact').FunctionComponent<any> | import('preact').ComponentClass<any> | import('preact').FunctionalComponent<any> } ComponentDefinition
-         * @typedef {{ shadow: false } | { shadow: true, mode: 'open' | 'closed'}} Options
-         * @typedef {HTMLElement & { _root: ShadowRoot | HTMLElement, _vdomComponent: ComponentDefinition, _component: ReturnType<typeof h> | null, _props: object }} PreactCustomElement
-         */
         
         function toCamelCase(str) {
             return str.replace(/-(\w)/g, (_, c) => (c ? c.toUpperCase() : ''));
@@ -953,7 +932,7 @@ class Element {
             const ref = (r) => {
                 if (!r) {
                     if (this.ref) {
-                       this.ref.removeEventListener('_preact', this._listener);
+                       this.ref.removeEventListener('_element', this._listener);
                     }
                 } else {
                     this.ref = r;
@@ -962,11 +941,11 @@ class Element {
                             event.stopPropagation();
                             event.detail.context = context;
                         };
-                        r.addEventListener('_preact', this._listener);
+                        r.addEventListener('_element', this._listener);
                     }
                 }
             };
-            // `h` di sini merujuk pada `self.create`
+
             return h('slot', { ...props, ref });
         }
         
@@ -1004,12 +983,12 @@ class Element {
         function ContextProvider(props) {
             this.getChildContext = () => props.context;
             const { context, children, ...rest } = props;
-            // `cloneElement` di sini merujuk pada implementasi lokal kita
+
             return cloneElement(children, rest);
         }
         
         function connectedCallback() {
-            const event = new CustomEvent('_preact', {
+            const event = new CustomEvent('_element', {
                 detail: {},
                 bubbles: true,
                 cancelable: true,
@@ -1067,9 +1046,9 @@ class Element {
              * @param {Options} [options] Opsi tambahan untuk elemen.
              */
             register: function(Component, tagName, propNames, options) {
-                function PreactElement() {
-                    const inst = /** @type {PreactCustomElement} */ (
-                        Reflect.construct(HTMLElement, [], PreactElement)
+                function myElement() {
+                    const inst = /** @type {myCustomElement} */ (
+                        Reflect.construct(HTMLElement, [], myElement)
                     );
                     inst._vdomComponent = Component;
                     inst._root =
@@ -1080,53 +1059,55 @@ class Element {
                     return inst;
                 }
 
-                PreactElement.prototype = Object.create(HTMLElement.prototype);
-                PreactElement.prototype.constructor = PreactElement;
-                PreactElement.prototype.connectedCallback = connectedCallback;
-                PreactElement.prototype.attributeChangedCallback = attributeChangedCallback;
-                PreactElement.prototype.disconnectedCallback = disconnectedCallback;
+                myElement.prototype = Object.create(HTMLElement.prototype);
+                myElement.prototype.constructor = myElement;
+                myElement.prototype.connectedCallback = connectedCallback;
+                myElement.prototype.attributeChangedCallback = attributeChangedCallback;
+                myElement.prototype.disconnectedCallback = disconnectedCallback;
+
+                myElement.prototype.ContextProvider = ContextProvider;
 
                 propNames =
                     propNames ||
                     Component.observedAttributes ||
                     Object.keys(Component.propTypes || {});
-                PreactElement.observedAttributes = propNames;
+                myElement.observedAttributes = propNames;
 
                 propNames.forEach((name) => {
-                    Object.defineProperty(PreactElement.prototype, name, {
-                        get() {
-                            return this._component ? this._component.props[name] : this._props[name];
-                        },
-                        set(v) {
-                            if (this._component) {
-                                this.attributeChangedCallback(name, null, v);
-                            } else {
-                                this._props[name] = v;
-                                // Jika belum terhubung, connectedCallback akan menangani render
-                            }
+                    if (!Object.getOwnPropertyDescriptor(myElement.prototype, name)) {
+                        Object.defineProperty(myElement.prototype, name, {
+                            get() {
+                                return this._component ? this._component.props[name] : this._props[name];
+                            },
+                            set(v) {
+                                if (this._component) {
+                                    this.attributeChangedCallback(name, null, v);
+                                } else {
+                                    this._props[name] = v;
+                                    // Jika belum terhubung, connectedCallback akan menangani render
+                                }
 
-                            const type = typeof v;
-                            if (
-                                v == null ||
-                                type === 'string' ||
-                                type === 'boolean' ||
-                                type === 'number'
-                            ) {
-                                this.setAttribute(name, v);
-                            }
-                        },
-                    });
+                                const type = typeof v;
+                                if (
+                                    v == null ||
+                                    type === 'string' ||
+                                    type === 'boolean' ||
+                                    type === 'number'
+                                ) {
+                                    this.setAttribute(name, v);
+                                }
+                            },
+                        });
+                    }
                 });
 
                 return customElements.define(
                     tagName || Component.tagName || Component.displayName || Component.name,
-                    PreactElement
+                    myElement
                 );
             }
         };
     }
-    // --- END: Integrasi Custom Element ---
-
 
     get AllowedTags() { return this.#tagWhitelist; }
     get AllowedAttributes() { return this.#attributeWhitelist; }
@@ -1135,9 +1116,7 @@ class Element {
 }
 
 export const el = new Element();
-// Anda juga bisa mengekspor `jsx`, `jsxs`, `jsxDEV` dan `createRef` jika dibutuhkan,
-// tetapi pada dasarnya mereka hanya akan mendelegasikan ke `el.create`.
-// Contoh:
+
 export const jsx = el.jsx.bind(el);
 export const jsxs = el.jsx.bind(el);
 export const jsxDEV = el.jsx.bind(el);

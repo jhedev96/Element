@@ -1,0 +1,61 @@
+{
+  "name": "@jhedevx/element",
+  "version": "1.0.0",
+  "description": "Library JavaScript front-end ringan dan deklaratif untuk membangun UI dan Web Components tanpa dependensi.",
+  "main": "src/Element.js",
+  "module": "src/Element.js",
+  "types": "types/index.d.ts",
+  "author": "jhedev96",
+  "directories": {
+    "example": "example"
+  },
+  "scripts": {
+    "build": "rollup -c",
+    "test": "jest",
+    "prepare": "npm run build",
+    "lint": "eslint src",
+    "test:watch": "jest --watch",
+    "prepublishOnly": "npm test && npm run build",
+    "typecheck": "tsc --noEmit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jhedev96/Element.git"
+  },
+  "keywords": [
+    "elementjs",
+    "ui",
+    "web component",
+    "declarative",
+    "dom",
+    "vanilla",
+    "jsx-like",
+    "sanitizer"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jhedev96/Element/issues"
+  },
+  "homepage": "https://github.com/jhedev96/Element#readme",
+  "files": [
+    "types/",
+    "dist/",
+    "src/",
+    "README.md",
+    "README-EN.md",
+    "LICENSE"
+  ],
+  "devDependencies": {
+    "@babel/core": "^7.28.3",
+    "@babel/preset-env": "^7.28.3",
+    "@babel/preset-typescript": "^7.27.1",
+    "@rollup/plugin-commonjs": "^28.0.6",
+    "@rollup/plugin-node-resolve": "^16.0.1",
+    "babel-jest": "^30.1.1",
+    "jest": "^30.1.1",
+    "rollup": "^4.50.0",
+    "rollup-plugin-babel": "^4.4.0",
+    "rollup-plugin-terser": "^7.0.2",
+    "typescript": "^5.9.2"
+  }
+}

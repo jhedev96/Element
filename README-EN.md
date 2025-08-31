@@ -27,7 +27,29 @@ In a complex JavaScript ecosystem, **Element.js** was born from the need for a t
 -   **Web Components Integration:** A simple yet powerful `register` helper to turn your Functional Components into standard, framework-agnostic Web Components.
 -   **Zero Dependencies:** Lightweight and ready to use without any external dependencies.
 
-### Installation & Setup
+## Installation & Setup
+
+### Installation via npm/pnpm
+
+You can install Element.js directly from npm/pnpm:
+
+```bash
+# Using npm
+npm install @jhedevx/element
+
+# Using pnpm
+pnpm add @jhedevx/element
+```
+
+Then import it in your project:
+```js
+import { el } from '@jhedevx/element';
+
+const app = el.create('div', { id: 'app' });
+el.render(document.body, app);
+```
+
+### Manual Installation
 
 Download the `Element.js` file and include it in your project as an ES Module.
 

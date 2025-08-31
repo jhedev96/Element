@@ -27,7 +27,28 @@ Di tengah ekosistem JavaScript yang kompleks, **Element.js** lahir dari kebutuha
 -   **Integrasi Web Components:** Helper `register` yang sederhana namun kuat untuk mengubah Komponen Fungsional Anda menjadi Web Component standar yang agnostik terhadap framework.
 -   **Tanpa Dependensi:** Ringan dan siap digunakan tanpa dependensi eksternal.
 
-### Instalasi & Pengaturan
+## Instalasi & Pengaturan
+
+### Instalasi via npm/pnpm
+
+Anda dapat menginstal Element.js langsung dari npm/pnpm:
+
+```bash
+# Menggunakan npm
+npm install @jhedevx/element
+
+# Menggunakan pnpm
+pnpm add @jhedevx/element
+```
+Lalu impor di proyek Anda:
+```js
+import { el } from '@jhedevx/element';
+
+const app = el.create('div', { id: 'app' });
+el.render(document.body, app);
+```
+
+### Instalasi manual
 
 Unduh file `Element.js` dan sertakan dalam proyek Anda sebagai ES Module.
 

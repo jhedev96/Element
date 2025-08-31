@@ -1,0 +1,33 @@
+# node modules
+node_modules
+
+# build tools & lockfiles
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+pnpm-lock.yaml
+yarn.lock
+package-lock.json
+
+# IDE/editor
+.vscode
+.idea
+.DS_Store
+
+# test & coverage
+__tests__/
+coverage/
+*.test.js
+*.spec.js
+
+# examples/demo/docs
+demo/
+example/
+examples/
+docs/
+
+# configs
+babel.config.js
+rollup.config.js
+webpack.config.js
+tsconfig.json
