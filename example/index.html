@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Element.js Deep Dive Demo</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Element.js Deep Dive Demo</h1>
+        <p>A comprehensive showcase of the Element.js library features.</p>
+    </header>
+
+    <main class="container">
+        <section class="demo-card">
+            <h2>1. Core: `el.create` and `el.init`</h2>
+            <p>Creating elements with various properties and rendering them.</p>
+            <div id="demo-core" class="demo-area"></div>
+        </section>
+
+        <section class="demo-card">
+            <h2>2. Rendering Engine: `el.render`</h2>
+            <p>Using the core `render` method for fine-grained DOM placement.</p>
+            <div id="demo-render" class="demo-area">
+                <button id="btn-prepend">Prepend Item</button>
+                <button id="btn-append">Append Item</button>
+                <ul id="render-list"><li>Initial Item</li></ul>
+            </div>
+        </section>
+
+        <section class="demo-card">
+            <h2>3. Direct DOM Access: `ref` and `assign` props</h2>
+            <p>Getting a direct reference to a DOM node after it's created.</p>
+            <div id="demo-ref" class="demo-area"></div>
+        </section>
+
+        <section class="demo-card">
+            <h2>4. Sanitization Showcase</h2>
+            <p>Demonstrating the default-on security feature.</p>
+            <div id="demo-sanitize" class="demo-area"></div>
+        </section>
+
+        <section class="demo-card">
+            <h2>5. Object-Driven DOM: `buildFromObject`</h2>
+            <p>Building a DOM tree from a JS object and merging content.</p>
+            <div id="demo-object" class="demo-area"></div>
+        </section>
+
+        <section class="demo-card">
+            <h2>6. Advanced Web Component</h2>
+            <p>A stateful Web Component created with `el.customElements.register`.</p>
+            <div id="demo-custom-element" class="demo-area">
+                <p>The component below is a fully standard Web Component:</p>
+                <interactive-counter start-value="5" step="2"></interactive-counter>
+                <interactive-counter start-value="100" step="-10"></interactive-counter>
+            </div>
+        </section>
+    </main>
+    
+    <script type="module" src="app.js"></script>
+</body>
+</html>
